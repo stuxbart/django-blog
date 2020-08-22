@@ -7,6 +7,8 @@
     {% include 'blog/base/css.html' %}
 </head>
 <body>
-    {% block content %}{% endblock %}
+{% include 'blog/base/navbar.html' %}
+{% block content %}{% endblock %}
+{% include 'blog/base/footer.html' %}
 </body>
 </html>

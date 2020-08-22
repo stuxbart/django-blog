@@ -1,5 +1,18 @@
 {% extends 'blog/base.html' %}
 
 {% block content %}
-List
+<div class="ui main text container">
+    <h1 class="ui header">My BLog</h1>
+    <div class="ui relaxed divided list">
+    {% for post in object_list %}
+          <div class="item">
+                <i class="large newspaper outline icon"></i>
+                <div class="content">
+                      <a href="{% url 'blog:post_detail' post.slug %}" class="header">{{ post.title }}</a>
+                      <div class="description">Published {{ post.publish|timesince }} ago</div>
+                </div>
+          </div>
+    {% endfor %}
+    </div>
+</div>
 {% endblock %}

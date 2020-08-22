@@ -1,5 +1,11 @@
 {% extends 'blog/base.html' %}
 
 {% block content %}
-Detail
+<div class="ui main text container">
+    <h2 class="ui header">{{ object.title }}</h2>
+    <p>Published: {{ object.publish }}</p>
+    <p>
+        {{ object.body }}
+    </p>
+</div>
 {% endblock %}
