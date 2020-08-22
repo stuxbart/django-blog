@@ -1,0 +1,15 @@
+<div class="ui pagination menu">
+    {% if page.number <= 1 %}
+    <a class="disabled item">Previous</a>
+    {% else %}
+    <a class="item" href=".?page={{ page.previous_page_number }}">Previous</a>
+    {% endif %}
+
+    <a class="active item" href=".?page={{ page.number }}">{{ page.number }}</a>
+
+    {% if page.number >= page.paginator.num_pages %}
+    <a class="disabled item">Next</a>
+    {% else %}
+    <a class="item" href=".?page={{ page.next_page_number }}">Next</a>
+    {% endif %}
+</div>
