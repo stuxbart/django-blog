@@ -39,6 +39,11 @@ class Post(models.Model):
         return reverse('blog:post_detail', kwargs={'slug': self.slug})
 
 
+class CommentManager(models.Manager):
+    def active(self):
+        return self.get_queryset().filter(active=True)
+
+
 class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
     name = models.CharField(max_length=80)
@@ -47,6 +52,8 @@ class Comment(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     active = models.BooleanField(default=True)
+
+    objects = CommentManager()
 
     class Meta:
         ordering = ['-created']
