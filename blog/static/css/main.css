@@ -6,8 +6,8 @@ body {
   flex-direction: column;
 }
 .main.container {
-    padding-top: 10vh;
-  flex: 1 0 auto;
+    padding: 10vh 0;
+    flex: 1 0 auto;
 }
 .footer {
   flex-shrink: 0;

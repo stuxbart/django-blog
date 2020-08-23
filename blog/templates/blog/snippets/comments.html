@@ -1,0 +1,44 @@
+<div class="ui minimal comments">
+    {% with comments.count as total_comments %}
+    <h3 class="ui dividing header">{{ total_comments }} Comment{{ total_comments|pluralize:"s" }}</h3>
+    {% endwith %}
+    {% for comment in comments %}
+    <div class="comment">
+        <a class="avatar">
+            <i class="comment large icon"></i>
+        </a>
+        <div class="content">
+              <a class="author">{{ comment.name }}</a>
+              <div class="metadata">
+                    <span class="date">{{ comment.created }}</span>
+              </div>
+              <div class="text">
+                    {{ comment.body }}
+              </div>
+              <div class="actions">
+                    <a class="reply">Hide</a>
+              </div>
+        </div>
+    </div>
+    {% endfor %}
+    <form class="ui reply form" action="" method="POST">
+        {% csrf_token %}
+        <div class="two fields">
+            <div class="field">
+                <label>Username</label>
+                {{ form.name }}
+            </div>
+            <div class="field">
+                <label>Email</label>
+                {{ form.email }}
+            </div>
+        </div>
+        <div class="field">
+            <label>Text</label>
+            {{ form.body }}
+        </div>
+        <button type="submit" class="ui blue labeled submit icon button">
+          <i class="icon edit"></i> Add Reply
+        </button>
+    </form>
+</div>

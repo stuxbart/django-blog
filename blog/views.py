@@ -18,14 +18,15 @@ class PostDetailView(DetailView, FormView):
 
     def get_success_url(self):
         obj = self.get_object()
-        return reverse("blog:post_detail", kwargs={'slug': obj.slug })
+        return reverse("blog:post_detail", kwargs={'slug': obj.slug})
 
     def get_context_data(self, **kwargs):
         context = super(PostDetailView, self).get_context_data(**kwargs)
-        context['comments'] = Comment.objects.active()
+        context['comments'] = self.get_object().comments.active()
         return context
 
     def form_valid(self, form):
         form.instance.post = self.get_object()
+        form.save()
         return super(PostDetailView, self).form_valid(form)
 

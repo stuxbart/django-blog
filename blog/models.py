@@ -39,9 +39,17 @@ class Post(models.Model):
         return reverse('blog:post_detail', kwargs={'slug': self.slug})
 
 
-class CommentManager(models.Manager):
+class CommentQuerySet(models.query.QuerySet):
     def active(self):
-        return self.get_queryset().filter(active=True)
+        return self.filter(active=True)
+
+
+class CommentManager(models.Manager):
+    def get_queryset(self):
+        return CommentQuerySet(self.model, using=self._db)
+
+    def active(self):
+        return self.get_queryset().active()
 
 
 class Comment(models.Model):
