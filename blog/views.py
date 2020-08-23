@@ -1,6 +1,7 @@
-from django.shortcuts import render
-from django.views.generic import ListView, DetailView, FormView
+from django.shortcuts import redirect
+from django.views.generic import ListView, DetailView, FormView, View
 from django.urls import reverse
+from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Post, Comment
 from .forms import CommentForm
 
@@ -22,7 +23,10 @@ class PostDetailView(DetailView, FormView):
 
     def get_context_data(self, **kwargs):
         context = super(PostDetailView, self).get_context_data(**kwargs)
-        context['comments'] = self.get_object().comments.active()
+        if self.request.user.is_authenticated and self.request.user.is_staff:
+            context['comments'] = self.get_object().comments.all()
+        else:
+            context['comments'] = self.get_object().comments.active()
         return context
 
     def form_valid(self, form):
@@ -30,3 +34,17 @@ class PostDetailView(DetailView, FormView):
         form.save()
         return super(PostDetailView, self).form_valid(form)
 
+
+class HideCommentView(LoginRequiredMixin, View):
+    def post(self, request, *args, **kwargs):
+        comment_id = self.kwargs.get('pk') or None
+        if comment_id is not None:
+            comment = Comment.objects.get(pk=comment_id)
+
+            if request.user.is_staff:
+                comment.active = not comment.active
+                comment.save()
+            post_slug = comment.post.slug
+            return redirect(reverse('blog:post_detail', kwargs={'slug': post_slug}))
+        else:
+            return redirect(reverse('blog:post_list'))

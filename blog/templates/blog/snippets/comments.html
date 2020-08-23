@@ -5,7 +5,11 @@
     {% for comment in comments %}
     <div class="comment">
         <a class="avatar">
+            {% if request.user.is_authenticated and request.user.is_staff %}
+            <i class="comment large {% if comment.active %}green{% else %}red{% endif %} icon"></i>
+            {% else %}
             <i class="comment large icon"></i>
+            {% endif %}
         </a>
         <div class="content">
               <a class="author">{{ comment.name }}</a>
@@ -15,9 +19,17 @@
               <div class="text">
                     {{ comment.body }}
               </div>
+            {% if request.user.is_authenticated and request.user.is_staff %}
               <div class="actions">
-                    <a class="reply">Hide</a>
+                  <form action="{% url 'blog:comment_hide' comment.id %}" method="POST">
+                      {% csrf_token %}
+                      <button type="submit" class="ui button">
+                          {% if comment.active %}Hide{% else %}Show{% endif %}
+                      </button>
+                  </form>
+
               </div>
+            {% endif %}
         </div>
     </div>
     {% endfor %}
