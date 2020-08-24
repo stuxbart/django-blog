@@ -2,6 +2,7 @@ from django.shortcuts import redirect, get_object_or_404
 from django.views.generic import ListView, DetailView, FormView, View
 from django.urls import reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Count
 from taggit.models import Tag
 from .models import Post, Comment
 from .forms import CommentForm
@@ -44,10 +45,17 @@ class PostDetailView(DetailView, FormView):
 
     def get_context_data(self, **kwargs):
         context = super(PostDetailView, self).get_context_data(**kwargs)
+
         if self.request.user.is_authenticated and self.request.user.is_staff:
             context['comments'] = self.get_object().comments.all()
         else:
             context['comments'] = self.get_object().comments.active()
+
+        tags_ids = context['object'].tags.values_list('id', flat=True)
+        similar_posts = Post.published.filter(tags__in=tags_ids).exclude(id=context['object'].id)
+        similar_posts = similar_posts.annotate(same_tags=Count('tags')).order_by('-same_tags', '-publish')
+
+        context['similar_posts'] = similar_posts
         return context
 
     def form_valid(self, form):
