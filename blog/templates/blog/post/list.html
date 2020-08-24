@@ -3,13 +3,22 @@
 {% block content %}
 <div class="ui main text container">
     <h1 class="ui header">My BLog</h1>
+    {% if tag %}
+    <h3 class="ui header">Searching by tag: {{ tag }}</h3>
+    {% endif %}
     <div class="ui relaxed divided list">
     {% for post in object_list %}
           <div class="item">
                 <i class="large newspaper outline icon"></i>
                 <div class="content">
-                      <a href="{% url 'blog:post_detail' post.slug %}" class="header">{{ post.title }}</a>
-                      <div class="description">Published {{ post.publish|timesince }} ago</div>
+                    <a href="{% url 'blog:post_detail' post.slug %}" class="header">{{ post.title }}</a>
+                    <div class="description">Published {{ post.publish|timesince }} ago</div>
+                    <p>Tags:
+                        {% for tag in post.tags.all %}
+                            <a href="{% url 'blog:post_tag_list' tag.slug %}">{{ tag }}</a>
+                        {% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                    </p>
                 </div>
           </div>
     {% endfor %}

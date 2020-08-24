@@ -1,7 +1,8 @@
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
 from django.views.generic import ListView, DetailView, FormView, View
 from django.urls import reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
+from taggit.models import Tag
 from .models import Post, Comment
 from .forms import CommentForm
 
@@ -10,6 +11,26 @@ class PostListView(ListView):
     queryset = Post.published.all()
     paginate_by = 3
     template_name = 'blog/post/list.html'
+
+    # def get_queryset(self):
+    #     tag_slug = self.kwargs.get('slug') or None
+    #     if tag_slug is not None:
+    #         tag = get_object_or_404(Tag, slug=tag_slug)
+    #         return Post.published.filter(tags__in=[tag])
+    #     return Post.published.all()
+
+    def get_context_data(self, *args, **kwargs):
+        tag_slug = self.kwargs.get('slug') or None
+        tag = None
+        if tag_slug is not None:
+            tag = get_object_or_404(Tag, slug=tag_slug)
+
+            qs = Post.published.filter(tags__in=[tag])
+        else:
+            qs = Post.published.all()
+        context = super(PostListView, self).get_context_data(*args, object_list=qs, **kwargs)
+        context['tag'] = tag
+        return context
 
 
 class PostDetailView(DetailView, FormView):

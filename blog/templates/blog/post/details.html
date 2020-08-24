@@ -4,6 +4,12 @@
 <div class="ui main text container">
     <h2 class="ui header">{{ object.title }}</h2>
     <p>Published: {{ object.publish }}</p>
+    <p>Tags:
+        {% for tag in object.tags.all %}
+            <a href="{% url 'blog:post_tag_list' tag.slug %}">{{ tag }}</a>
+            {% if not forloop.last %}, {% endif %}
+        {% endfor %}
+    </p>
     <p>
         {{ object.body }}
     </p>
