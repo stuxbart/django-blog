@@ -29,7 +29,7 @@ class PostListView(ListView):
             qs = Post.published.filter(tags__in=[tag])
         else:
             qs = Post.published.all()
-        context = super(PostListView, self).get_context_data(*args, object_list=qs, **kwargs)
+        context = super(PostListView, self).get_context_data(object_list=qs)
         context['tag'] = tag
         return context
 
